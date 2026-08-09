@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { getBoutiques, creerBoutique, supprimerBoutique } from "../api/boutiques";
+import { getAlertes } from "../api/produits";
 import { logout } from "../api/auth";
 import BoutiqueDetail from "./BoutiqueDetail";
 
 function Dashboard({ onLogout }) {
   const [boutiqueSelectionnee, setBoutiqueSelectionnee] = useState(null);
   const [boutiques, setBoutiques] = useState([]);
+  const [alertes, setAlertes] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
   const [nomBoutique, setNomBoutique] = useState("");
@@ -14,6 +16,7 @@ function Dashboard({ onLogout }) {
 
   useEffect(() => {
     chargerBoutiques();
+    chargerAlertes();
   }, []);
 
   async function chargerBoutiques() {
@@ -25,6 +28,15 @@ function Dashboard({ onLogout }) {
       setErreur(err.message);
     } finally {
       setChargement(false);
+    }
+  }
+
+  async function chargerAlertes() {
+    try {
+      const data = await getAlertes();
+      setAlertes(data);
+    } catch (err) {
+      // silencieux, les alertes ne sont pas critiques
     }
   }
 
@@ -47,6 +59,7 @@ function Dashboard({ onLogout }) {
     try {
       await supprimerBoutique(id);
       chargerBoutiques();
+      chargerAlertes();
     } catch (err) {
       setErreur(err.message);
     }
@@ -61,7 +74,10 @@ function Dashboard({ onLogout }) {
     return (
       <BoutiqueDetail
         boutique={boutiqueSelectionnee}
-        onRetour={() => setBoutiqueSelectionnee(null)}
+        onRetour={() => {
+          setBoutiqueSelectionnee(null);
+          chargerAlertes();
+        }}
       />
     );
   }
@@ -112,6 +128,23 @@ function Dashboard({ onLogout }) {
         </header>
 
         <div className="p-8">
+          {alertes.length > 0 && (
+            <div className="bg-[#C1622D]/10 border border-[#C1622D]/30 rounded-2xl p-4 mb-6 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#C1622D] text-white flex items-center justify-center text-sm shrink-0">
+                !
+              </div>
+              <div>
+                <p className="font-medium text-[#C1622D] text-sm">
+                  {alertes.length} produit{alertes.length > 1 ? "s" : ""} en stock bas
+                </p>
+                <p className="text-xs text-[#8A5A3D] mt-0.5">
+                  {alertes.slice(0, 3).map((a) => a.nom).join(", ")}
+                  {alertes.length > 3 ? ` et ${alertes.length - 3} autre(s)` : ""}
+                </p>
+              </div>
+            </div>
+          )}
+
           {erreur && (
             <p className="text-[#C1622D] text-sm mb-4 bg-[#C1622D]/10 px-3 py-2 rounded-lg inline-block">
               {erreur}
