@@ -30,67 +30,81 @@ function Login({ onLoginSuccess }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">
-          {modeInscription ? "Créer un compte" : "Connexion"}
-        </h1>
+    <div className="min-h-screen bg-[#FAF6F0] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#0F6B5C] text-white font-display text-xl mb-4">
+            S
+          </div>
+          <h1 className="font-display text-3xl font-semibold text-[#0B2B2A]">
+            StockPro
+          </h1>
+          <p className="text-sm text-[#6B7C7A] mt-1">Gestion de stock, simplifiée</p>
+        </div>
 
-        {erreur && (
-          <p className="text-red-600 text-sm mb-4">{erreur}</p>
-        )}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-8 rounded-2xl shadow-sm border border-[#E8E1D5]"
+        >
+          <h2 className="font-display text-xl font-semibold text-[#0B2B2A] mb-6">
+            {modeInscription ? "Créer un compte" : "Connexion"}
+          </h2>
 
-        {modeInscription && (
+          {erreur && (
+            <p className="text-[#C1622D] text-sm mb-4 bg-[#C1622D]/10 px-3 py-2 rounded-lg">
+              {erreur}
+            </p>
+          )}
+
+          {modeInscription && (
+            <input
+              type="text"
+              placeholder="Nom"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+              required
+            />
+          )}
+
           <input
-            type="text"
-            placeholder="Nom"
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            className="w-full border rounded px-3 py-2 mb-3"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
             required
           />
-        )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-3"
-          required
-        />
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            value={motDePasse}
+            onChange={(e) => setMotDePasse(e.target.value)}
+            className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={motDePasse}
-          onChange={(e) => setMotDePasse(e.target.value)}
-          className="w-full border rounded px-3 py-2 mb-4"
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={chargement}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {chargement ? "..." : modeInscription ? "S'inscrire" : "Se connecter"}
-        </button>
-
-        <p className="text-sm text-center mt-4">
-          {modeInscription ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
           <button
-            type="button"
-            onClick={() => setModeInscription(!modeInscription)}
-            className="text-blue-600 underline"
+            type="submit"
+            disabled={chargement}
+            className="w-full bg-[#0F6B5C] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#0D5A4D] transition disabled:opacity-50"
           >
-            {modeInscription ? "Se connecter" : "S'inscrire"}
+            {chargement ? "..." : modeInscription ? "S'inscrire" : "Se connecter"}
           </button>
-        </p>
-      </form>
+
+          <p className="text-sm text-center mt-5 text-[#6B7C7A]">
+            {modeInscription ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
+            <button
+              type="button"
+              onClick={() => setModeInscription(!modeInscription)}
+              className="text-[#0F6B5C] font-medium hover:underline"
+            >
+              {modeInscription ? "Se connecter" : "S'inscrire"}
+            </button>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

@@ -78,22 +78,27 @@ function BoutiqueDetail({ boutique, onRetour }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b border-slate-200 px-8 py-5">
+    <div className="min-h-screen bg-[#FAF6F0]">
+      <header className="bg-white border-b border-[#E8E1D5] px-8 py-5">
         <button
           onClick={onRetour}
-          className="text-sm text-slate-500 hover:text-indigo-600 mb-2 flex items-center gap-1"
+          className="text-sm text-[#6B7C7A] hover:text-[#0F6B5C] mb-3 flex items-center gap-1 transition"
         >
           ← Retour aux boutiques
         </button>
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-900">{boutique.nom}</h2>
-            <p className="text-sm text-slate-500">{boutique.adresse || "Aucune adresse"}</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#0F6B5C]/10 text-[#0F6B5C] font-display font-semibold flex items-center justify-center">
+              {boutique.nom.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{boutique.nom}</h2>
+              <p className="text-sm text-[#6B7C7A]">{boutique.adresse || "Aucune adresse"}</p>
+            </div>
           </div>
           <button
             onClick={() => setAfficherFormulaire(!afficherFormulaire)}
-            className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-medium px-4 py-2 rounded-md shadow-sm hover:shadow-md transition"
+            className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
           >
             + Nouveau produit
           </button>
@@ -101,56 +106,60 @@ function BoutiqueDetail({ boutique, onRetour }) {
       </header>
 
       <div className="p-8">
-        {erreur && <p className="text-red-600 text-sm mb-4">{erreur}</p>}
+        {erreur && (
+          <p className="text-[#C1622D] text-sm mb-4 bg-[#C1622D]/10 px-3 py-2 rounded-lg inline-block">
+            {erreur}
+          </p>
+        )}
 
         {afficherFormulaire && (
           <form
             onSubmit={handleCreerProduit}
-            className="bg-white border border-slate-200 rounded-xl p-6 mb-6 max-w-lg shadow-sm"
+            className="bg-white border border-[#E8E1D5] rounded-2xl p-6 mb-6 max-w-lg shadow-sm"
           >
-            <h3 className="font-semibold text-slate-900 mb-4">Ajouter un produit</h3>
+            <h3 className="font-display font-semibold text-[#0B2B2A] mb-4">Ajouter un produit</h3>
             <input
               type="text"
               placeholder="Nom du produit"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
-              className="w-full border border-slate-300 rounded-md px-3 py-2 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
               required
             />
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Prix unitaire</label>
+                <label className="text-xs text-[#6B7C7A] mb-1 block">Prix unitaire</label>
                 <input
                   type="number"
                   step="0.01"
                   value={prix}
                   onChange={(e) => setPrix(e.target.value)}
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
                   required
                 />
               </div>
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Stock initial</label>
+                <label className="text-xs text-[#6B7C7A] mb-1 block">Stock initial</label>
                 <input
                   type="number"
                   value={quantite}
                   onChange={(e) => setQuantite(e.target.value)}
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
                 />
               </div>
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Seuil alerte</label>
+                <label className="text-xs text-[#6B7C7A] mb-1 block">Seuil alerte</label>
                 <input
                   type="number"
                   value={seuil}
                   onChange={(e) => setSeuil(e.target.value)}
-                  className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
                 />
               </div>
             </div>
             <button
               type="submit"
-              className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-medium px-4 py-2 rounded-md shadow-sm hover:shadow-md transition"
+              className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
             >
               Créer le produit
             </button>
@@ -158,13 +167,13 @@ function BoutiqueDetail({ boutique, onRetour }) {
         )}
 
         {chargement ? (
-          <p className="text-slate-500 text-sm">Chargement...</p>
+          <p className="text-[#6B7C7A] text-sm">Chargement...</p>
         ) : produits.length === 0 ? (
-          <p className="text-slate-500 text-sm">Aucun produit pour l'instant.</p>
+          <p className="text-[#6B7C7A] text-sm">Aucun produit pour l'instant.</p>
         ) : (
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-[#E8E1D5] rounded-2xl overflow-hidden shadow-sm">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wide">
+              <thead className="bg-[#FAF6F0] border-b border-[#E8E1D5] text-[#6B7C7A] text-xs uppercase tracking-wide">
                 <tr>
                   <th className="text-left px-5 py-3 font-medium">Produit</th>
                   <th className="text-left px-5 py-3 font-medium">Prix</th>
@@ -173,35 +182,35 @@ function BoutiqueDetail({ boutique, onRetour }) {
                   <th className="text-right px-5 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#F0EBE0]">
                 {produits.map((p) => {
                   const enAlerte = p.quantite_stock <= p.seuil_alerte;
                   return (
-                    <tr key={p.id} className="hover:bg-slate-50">
-                      <td className="px-5 py-3 font-medium text-slate-900">{p.nom}</td>
-                      <td className="px-5 py-3 text-slate-600">{p.prix_unitaire} FCFA</td>
-                      <td className="px-5 py-3 text-slate-600">{p.quantite_stock}</td>
+                    <tr key={p.id} className="hover:bg-[#FAF6F0] transition">
+                      <td className="px-5 py-3 font-medium text-[#0B2B2A]">{p.nom}</td>
+                      <td className="px-5 py-3 text-[#6B7C7A]">{p.prix_unitaire} FCFA</td>
+                      <td className="px-5 py-3 text-[#6B7C7A]">{p.quantite_stock}</td>
                       <td className="px-5 py-3">
                         {enAlerte ? (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#C1622D]/10 text-[#C1622D]">
                             Stock bas
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#0F6B5C]/10 text-[#0F6B5C]">
                             OK
                           </span>
                         )}
                       </td>
-                      <td className="px-5 py-3 text-right space-x-2">
+                      <td className="px-5 py-3 text-right space-x-3">
                         <button
                           onClick={() => setMouvementProduitId(p.id)}
-                          className="text-indigo-600 hover:underline text-xs font-medium"
+                          className="text-[#0F6B5C] hover:underline text-xs font-medium"
                         >
                           Mouvement
                         </button>
                         <button
                           onClick={() => handleSupprimer(p.id)}
-                          className="text-red-600 hover:underline text-xs font-medium"
+                          className="text-[#C1622D] hover:underline text-xs font-medium"
                         >
                           Supprimer
                         </button>
@@ -215,16 +224,16 @@ function BoutiqueDetail({ boutique, onRetour }) {
         )}
 
         {mouvementProduitId && (
-          <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-[#0B2B2A]/50 flex items-center justify-center z-50">
             <form
               onSubmit={handleMouvement}
-              className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl"
+              className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl"
             >
-              <h3 className="font-semibold text-slate-900 mb-4">Enregistrer un mouvement</h3>
+              <h3 className="font-display font-semibold text-[#0B2B2A] mb-4">Enregistrer un mouvement</h3>
               <select
                 value={mouvementType}
                 onChange={(e) => setMouvementType(e.target.value)}
-                className="w-full border border-slate-300 rounded-md px-3 py-2 mb-3 text-sm"
+                className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm"
               >
                 <option value="entree">Entrée</option>
                 <option value="sortie">Sortie</option>
@@ -234,20 +243,20 @@ function BoutiqueDetail({ boutique, onRetour }) {
                 placeholder="Quantité"
                 value={mouvementQuantite}
                 onChange={(e) => setMouvementQuantite(e.target.value)}
-                className="w-full border border-slate-300 rounded-md px-3 py-2 mb-4 text-sm"
+                className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-4 text-sm"
                 required
               />
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-medium px-4 py-2 rounded-md"
+                  className="flex-1 bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
                 >
                   Confirmer
                 </button>
                 <button
                   type="button"
                   onClick={() => setMouvementProduitId(null)}
-                  className="flex-1 bg-slate-100 text-slate-700 text-sm font-medium px-4 py-2 rounded-md"
+                  className="flex-1 bg-[#F0EBE0] text-[#0B2B2A] text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#E8E1D5] transition"
                 >
                   Annuler
                 </button>
