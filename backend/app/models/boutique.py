@@ -14,4 +14,4 @@ class Boutique(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     proprietaire = relationship("User", back_populates="boutiques")
-    produits = relationship("Produit", back_populates="boutique")
+    produits = relationship("Produit", back_populates="boutique", cascade="all, delete-orphan")

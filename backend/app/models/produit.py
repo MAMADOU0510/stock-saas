@@ -16,4 +16,4 @@ class Produit(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     boutique = relationship("Boutique", back_populates="produits")
-    mouvements = relationship("MouvementStock", back_populates="produit")
+    mouvements = relationship("MouvementStock", back_populates="produit", cascade="all, delete-orphan")
