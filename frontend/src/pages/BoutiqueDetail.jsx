@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getProduitsBoutique, creerProduit, supprimerProduit } from "../api/produits";
 import { creerMouvement } from "../api/mouvements";
+import Clients from "./Clients";
 
 function BoutiqueDetail({ boutique, onRetour }) {
+  const [afficherClients, setAfficherClients] = useState(false);
   const [produits, setProduits] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
@@ -77,6 +79,10 @@ function BoutiqueDetail({ boutique, onRetour }) {
     }
   }
 
+  if (afficherClients) {
+    return <Clients boutique={boutique} onRetour={() => setAfficherClients(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF6F0]">
       <header className="bg-white border-b border-[#E8E1D5] px-8 py-5">
@@ -96,12 +102,20 @@ function BoutiqueDetail({ boutique, onRetour }) {
               <p className="text-sm text-[#6B7C7A]">{boutique.adresse || "Aucune adresse"}</p>
             </div>
           </div>
-          <button
-            onClick={() => setAfficherFormulaire(!afficherFormulaire)}
-            className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
-          >
-            + Nouveau produit
-          </button>
+          <div className="flex items-center">
+            <button
+              onClick={() => setAfficherClients(true)}
+              className="bg-white border border-[#E8E1D5] text-[#0B2B2A] text-sm font-medium px-4 py-2.5 rounded-lg hover:border-[#0F6B5C]/30 transition mr-2"
+            >
+              Clients
+            </button>
+            <button
+              onClick={() => setAfficherFormulaire(!afficherFormulaire)}
+              className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
+            >
+              + Nouveau produit
+            </button>
+          </div>
         </div>
       </header>
 
