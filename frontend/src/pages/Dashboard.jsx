@@ -3,8 +3,10 @@ import { getBoutiques, creerBoutique, supprimerBoutique } from "../api/boutiques
 import { getAlertes } from "../api/produits";
 import { logout } from "../api/auth";
 import BoutiqueDetail from "./BoutiqueDetail";
+import Parametres from "./Parametres";
 
 function Dashboard({ onLogout }) {
+  const [pageActuelle, setPageActuelle] = useState("boutiques");
   const [boutiqueSelectionnee, setBoutiqueSelectionnee] = useState(null);
   const [boutiques, setBoutiques] = useState([]);
   const [alertes, setAlertes] = useState([]);
@@ -36,7 +38,7 @@ function Dashboard({ onLogout }) {
       const data = await getAlertes();
       setAlertes(data);
     } catch (err) {
-      // silencieux, les alertes ne sont pas critiques
+      // silencieux
     }
   }
 
@@ -82,6 +84,10 @@ function Dashboard({ onLogout }) {
     );
   }
 
+  if (pageActuelle === "parametres") {
+    return <Parametres onRetour={() => setPageActuelle("boutiques")} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF6F0] flex">
       {/* Sidebar */}
@@ -96,8 +102,17 @@ function Dashboard({ onLogout }) {
           </div>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
-          <a className="block px-3 py-2 rounded-lg bg-white/10 text-sm font-medium text-white">
+          
+       <a    onClick={() => setPageActuelle("boutiques")}
+            className="block px-3 py-2 rounded-lg bg-white/10 text-sm font-medium text-white cursor-pointer"
+          >
             Boutiques
+          </a>
+          
+          <a   onClick={() => setPageActuelle("parametres")}
+            className="block px-3 py-2 rounded-lg text-sm font-medium text-[#C7D6D4] hover:bg-white/10 cursor-pointer transition"
+          >
+            Paramètres
           </a>
         </nav>
         <div className="px-3 py-4 border-t border-white/10">
