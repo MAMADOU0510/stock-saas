@@ -1,0 +1,38 @@
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.core.security import hash_mot_de_passe, verifier_mot_de_passe, creer_access_token
+from app.models.user import User
+from app.schemas.user import UserCreate, UserOut
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@router.post("/register", response_model=UserOut)
+def register(data: UserCreate, db: Session = Depends(get_db)):
+    existant = db.query(User).filter(User.email == data.email).first()
+    if existant:
+        raise HTTPException(status_code=400, detail="Cet email est déjà utilisé")
+
+    user = User(
+        nom=data.nom,
+        email=data.email,
+        mot_de_passe_hash=hash_mot_de_passe(data.mot_de_passe),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    # form_data.username = email
+    user = db.query(User).filter(User.email == form_data.username).first()
+    if not user or not verifier_mot_de_passe(form_data.password, user.mot_de_passe_hash):
+        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+
+    token = creer_access_token({"sub": str(user.id)})
+    return {"access_token": token, "token_type": "bearer"}

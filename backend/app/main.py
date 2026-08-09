@@ -1,0 +1,29 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.database import Base, engine
+from app.routers import auth, boutiques, produits, mouvements
+
+# Crée les tables dans la DB si elles n'existent pas encore
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Stock SaaS API", version="1.0.0")
+
+# Autorise le frontend React à appeler l'API (à restreindre en production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router)
+app.include_router(boutiques.router)
+app.include_router(produits.router)
+app.include_router(mouvements.router)
+
+
+@app.get("/")
+def root():
+    return {"message": "Stock SaaS API en ligne"}

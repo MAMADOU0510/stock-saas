@@ -1,11 +1,15 @@
+import { useState } from "react";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+
 function App() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-blue-600">
-        Stock SaaS 🚀
-      </h1>
-    </div>
-  )
+  const [connecte, setConnecte] = useState(!!localStorage.getItem("token"));
+
+  if (!connecte) {
+    return <Login onLoginSuccess={() => setConnecte(true)} />;
+  }
+
+  return <Dashboard onLogout={() => setConnecte(false)} />;
 }
 
-export default App
+export default App;
