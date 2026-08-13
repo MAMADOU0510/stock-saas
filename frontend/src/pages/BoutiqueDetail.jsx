@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { getProduitsBoutique, creerProduit, supprimerProduit } from "../api/produits";
 import { creerMouvement } from "../api/mouvements";
 import Clients from "./Clients";
+import { useTraduction } from "../traductions";
 
 function BoutiqueDetail({ boutique, onRetour }) {
+  const langue = localStorage.getItem("langue") || "fr";
+  const t = useTraduction(langue);
   const [afficherClients, setAfficherClients] = useState(false);
   const [produits, setProduits] = useState([]);
   const [chargement, setChargement] = useState(true);
@@ -90,7 +93,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
           onClick={onRetour}
           className="text-sm text-[#6B7C7A] hover:text-[#0F6B5C] mb-3 flex items-center gap-1 transition"
         >
-          ← Retour aux boutiques
+          ← {t("retour")}
         </button>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -99,7 +102,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
             </div>
             <div>
               <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{boutique.nom}</h2>
-              <p className="text-sm text-[#6B7C7A]">{boutique.adresse || "Aucune adresse"}</p>
+              <p className="text-sm text-[#6B7C7A]">{boutique.adresse || t("aucuneAdresse")}</p>
             </div>
           </div>
           <div className="flex items-center">
@@ -107,13 +110,13 @@ function BoutiqueDetail({ boutique, onRetour }) {
               onClick={() => setAfficherClients(true)}
               className="bg-white border border-[#E8E1D5] text-[#0B2B2A] text-sm font-medium px-4 py-2.5 rounded-lg hover:border-[#0F6B5C]/30 transition mr-2"
             >
-              Clients
+              {t("clients")}
             </button>
             <button
               onClick={() => setAfficherFormulaire(!afficherFormulaire)}
               className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
             >
-              + Nouveau produit
+              + {t("nouveauProduit")}
             </button>
           </div>
         </div>
@@ -181,7 +184,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
         )}
 
         {chargement ? (
-          <p className="text-[#6B7C7A] text-sm">Chargement...</p>
+          <p className="text-[#6B7C7A] text-sm">{t("chargement")}</p>
         ) : produits.length === 0 ? (
           <p className="text-[#6B7C7A] text-sm">Aucun produit pour l'instant.</p>
         ) : (
@@ -226,7 +229,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
                           onClick={() => handleSupprimer(p.id)}
                           className="text-[#C1622D] hover:underline text-xs font-medium"
                         >
-                          Supprimer
+                          {t("supprimer")}
                         </button>
                       </td>
                     </tr>
