@@ -2,6 +2,8 @@ import { useState } from "react";
 import { login, register } from "../api/auth";
 import { langues, useTraduction } from "../traductions";
 
+const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function Login({ onLoginSuccess }) {
   const [langue, setLangue] = useState(localStorage.getItem("langue") || "fr");
   const t = useTraduction(langue);
@@ -12,6 +14,27 @@ function Login({ onLoginSuccess }) {
   const [erreur, setErreur] = useState("");
   const [chargement, setChargement] = useState(false);
 
+  const [toucheNom, setToucheNom] = useState(false);
+  const [toucheEmail, setToucheEmail] = useState(false);
+  const [touchePassword, setTouchePassword] = useState(false);
+
+  const erreurNom = modeInscription && toucheNom && nom.trim().length < 2
+    ? "Le nom doit contenir au moins 2 caractères"
+    : "";
+
+  const erreurEmail = toucheEmail && email.length > 0 && !REGEX_EMAIL.test(email)
+    ? "Format d'email invalide (ex: nom@exemple.com)"
+    : "";
+
+  const erreurPassword = touchePassword && modeInscription && motDePasse.length > 0 && motDePasse.length < 6
+    ? "Le mot de passe doit contenir au moins 6 caractères"
+    : "";
+
+  const formulaireValide =
+    email.length > 0 && REGEX_EMAIL.test(email) &&
+    motDePasse.length > 0 &&
+    (!modeInscription || (nom.trim().length >= 2 && motDePasse.length >= 6));
+
   function changerLangue(nouvelleLangue) {
     setLangue(nouvelleLangue);
     localStorage.setItem("langue", nouvelleLangue);
@@ -20,8 +43,13 @@ function Login({ onLoginSuccess }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setErreur("");
-    setChargement(true);
+    setToucheNom(true);
+    setToucheEmail(true);
+    setTouchePassword(true);
 
+    if (!formulaireValide) return;
+
+    setChargement(true);
     try {
       if (modeInscription) {
         await register(nom, email, motDePasse);
@@ -67,6 +95,7 @@ function Login({ onLoginSuccess }) {
         <form
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-2xl shadow-sm border border-[#E8E1D5]"
+          noValidate
         >
           <h2 className="font-display text-xl font-semibold text-[#0B2B2A] mb-6">
             {modeInscription ? t("creerCompte") : t("connexion")}
@@ -79,33 +108,51 @@ function Login({ onLoginSuccess }) {
           )}
 
           {modeInscription && (
-            <input
-              type="text"
-              placeholder={t("nom")}
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
-              required
-            />
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder={t("nom")}
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                onBlur={() => setToucheNom(true)}
+                className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 ${
+                  erreurNom ? "border-[#C1622D] focus:ring-[#C1622D]/30" : "border-[#E8E1D5] focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+                }`}
+              />
+              {erreurNom && <p className="text-[#C1622D] text-xs mt-1">{erreurNom}</p>}
+            </div>
           )}
 
-          <input
-            type="email"
-            placeholder={t("email")}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
-            required
-          />
+          <div className="mb-3">
+            <input
+              type="email"
+              placeholder={t("email")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setToucheEmail(true)}
+              className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 ${
+                erreurEmail ? "border-[#C1622D] focus:ring-[#C1622D]/30" : "border-[#E8E1D5] focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+              }`}
+            />
+            {erreurEmail && <p className="text-[#C1622D] text-xs mt-1">{erreurEmail}</p>}
+          </div>
 
-          <input
-            type="password"
-            placeholder={t("motDePasse")}
-            value={motDePasse}
-            onChange={(e) => setMotDePasse(e.target.value)}
-            className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
-            required
-          />
+          <div className="mb-5">
+            <input
+              type="password"
+              placeholder={t("motDePasse")}
+              value={motDePasse}
+              onChange={(e) => setMotDePasse(e.target.value)}
+              onBlur={() => setTouchePassword(true)}
+              className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 ${
+                erreurPassword ? "border-[#C1622D] focus:ring-[#C1622D]/30" : "border-[#E8E1D5] focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+              }`}
+            />
+            {erreurPassword && <p className="text-[#C1622D] text-xs mt-1">{erreurPassword}</p>}
+            {modeInscription && !erreurPassword && (
+              <p className="text-[#6B7C7A] text-xs mt-1">Minimum 6 caractères</p>
+            )}
+          </div>
 
           <button
             type="submit"
