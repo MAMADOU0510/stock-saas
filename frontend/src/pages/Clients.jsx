@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { getClientsBoutique, creerClient, supprimerClient } from "../api/clients";
 import { getCreditsClient, creerCredit, marquerPaye } from "../api/credits";
+import { useTraduction } from "../traductions";
 
 function Clients({ boutique, onRetour }) {
+  const langue = localStorage.getItem("langue") || "fr";
+  const t = useTraduction(langue);
   const [clients, setClients] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
@@ -98,7 +101,7 @@ function Clients({ boutique, onRetour }) {
             onClick={() => setClientOuvert(null)}
             className="text-sm text-[#6B7C7A] hover:text-[#0F6B5C] mb-2 flex items-center gap-1 transition"
           >
-            ← Retour aux clients
+            ← {t("clients")}
           </button>
           <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{clientOuvert.nom}</h2>
           <p className="text-sm text-[#6B7C7A]">{clientOuvert.telephone || "Pas de téléphone"}</p>
@@ -194,11 +197,11 @@ function Clients({ boutique, onRetour }) {
           onClick={onRetour}
           className="text-sm text-[#6B7C7A] hover:text-[#0F6B5C] mb-2 flex items-center gap-1 transition"
         >
-          ← Retour à la boutique
+          ← {t("retour")}
         </button>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">Clients & crédits</h2>
+            <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{t("clients")}</h2>
             <p className="text-sm text-[#6B7C7A]">{boutique.nom}</p>
           </div>
           <button
@@ -247,7 +250,7 @@ function Clients({ boutique, onRetour }) {
         )}
 
         {chargement ? (
-          <p className="text-[#6B7C7A] text-sm">Chargement...</p>
+          <p className="text-[#6B7C7A] text-sm">{t("chargement")}</p>
         ) : clients.length === 0 ? (
           <p className="text-[#6B7C7A] text-sm">Aucun client pour l'instant.</p>
         ) : (
@@ -265,7 +268,7 @@ function Clients({ boutique, onRetour }) {
                   }}
                   className="absolute top-4 right-4 text-[#C1622D] hover:text-white hover:bg-[#C1622D] text-xs font-medium px-2 py-1 rounded-md transition"
                 >
-                  Supprimer
+                  {t("supprimer")}
                 </button>
                 <div className="w-10 h-10 rounded-full bg-[#0F6B5C]/10 text-[#0F6B5C] font-display font-semibold flex items-center justify-center mb-3">
                   {c.nom.charAt(0).toUpperCase()}

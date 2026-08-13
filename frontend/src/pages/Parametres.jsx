@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { getProfil, modifierProfil } from "../api/profil";
+import { useTraduction } from "../traductions";
 
 function Parametres({ onRetour }) {
+  const langue = localStorage.getItem("langue") || "fr";
+  const t = useTraduction(langue);
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
@@ -45,15 +48,15 @@ function Parametres({ onRetour }) {
           onClick={onRetour}
           className="text-sm text-[#6B7C7A] hover:text-[#0F6B5C] mb-2 flex items-center gap-1 transition"
         >
-          ← Retour
+          ← {t("retour")}
         </button>
-        <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">Paramètres</h2>
+        <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{t("parametres")}</h2>
         <p className="text-sm text-[#6B7C7A]">Gérer vos informations de compte</p>
       </header>
 
       <div className="p-8">
         {chargement ? (
-          <p className="text-[#6B7C7A] text-sm">Chargement...</p>
+          <p className="text-[#6B7C7A] text-sm">{t("chargement")}</p>
         ) : (
           <form
             onSubmit={handleSubmit}
@@ -70,7 +73,7 @@ function Parametres({ onRetour }) {
               </p>
             )}
 
-            <label className="text-xs text-[#6B7C7A] mb-1 block">Nom</label>
+            <label className="text-xs text-[#6B7C7A] mb-1 block">{t("nom")}</label>
             <input
               type="text"
               value={nom}
@@ -79,7 +82,7 @@ function Parametres({ onRetour }) {
               required
             />
 
-            <label className="text-xs text-[#6B7C7A] mb-1 block">Email</label>
+            <label className="text-xs text-[#6B7C7A] mb-1 block">{t("email")}</label>
             <input
               type="email"
               value={email}

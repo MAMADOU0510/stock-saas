@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { login, register } from "../api/auth";
+import { langues, useTraduction } from "../traductions";
 
 function Login({ onLoginSuccess }) {
+  const [langue, setLangue] = useState(localStorage.getItem("langue") || "fr");
+  const t = useTraduction(langue);
   const [modeInscription, setModeInscription] = useState(false);
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [erreur, setErreur] = useState("");
   const [chargement, setChargement] = useState(false);
+
+  function changerLangue(nouvelleLangue) {
+    setLangue(nouvelleLangue);
+    localStorage.setItem("langue", nouvelleLangue);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -32,6 +40,20 @@ function Login({ onLoginSuccess }) {
   return (
     <div className="min-h-screen bg-[#FAF6F0] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
+        <div className="flex justify-end mb-4">
+          <select
+            value={langue}
+            onChange={(e) => changerLangue(e.target.value)}
+            className="text-sm border border-[#E8E1D5] rounded-lg px-2 py-1 text-[#6B7C7A] bg-white"
+          >
+            {Object.entries(langues).map(([code, label]) => (
+              <option key={code} value={code}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#0F6B5C] text-white font-display text-xl mb-4">
             S
@@ -47,7 +69,7 @@ function Login({ onLoginSuccess }) {
           className="bg-white p-8 rounded-2xl shadow-sm border border-[#E8E1D5]"
         >
           <h2 className="font-display text-xl font-semibold text-[#0B2B2A] mb-6">
-            {modeInscription ? "Créer un compte" : "Connexion"}
+            {modeInscription ? t("creerCompte") : t("connexion")}
           </h2>
 
           {erreur && (
@@ -59,7 +81,7 @@ function Login({ onLoginSuccess }) {
           {modeInscription && (
             <input
               type="text"
-              placeholder="Nom"
+              placeholder={t("nom")}
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
@@ -69,7 +91,7 @@ function Login({ onLoginSuccess }) {
 
           <input
             type="email"
-            placeholder="Email"
+            placeholder={t("email")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
@@ -78,7 +100,7 @@ function Login({ onLoginSuccess }) {
 
           <input
             type="password"
-            placeholder="Mot de passe"
+            placeholder={t("motDePasse")}
             value={motDePasse}
             onChange={(e) => setMotDePasse(e.target.value)}
             className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
@@ -90,17 +112,17 @@ function Login({ onLoginSuccess }) {
             disabled={chargement}
             className="w-full bg-[#0F6B5C] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#0D5A4D] transition disabled:opacity-50"
           >
-            {chargement ? "..." : modeInscription ? "S'inscrire" : "Se connecter"}
+            {chargement ? "..." : modeInscription ? t("sInscrire") : t("seConnecter")}
           </button>
 
           <p className="text-sm text-center mt-5 text-[#6B7C7A]">
-            {modeInscription ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
+            {modeInscription ? t("dejaCompte") : t("pasDeCompte")}{" "}
             <button
               type="button"
               onClick={() => setModeInscription(!modeInscription)}
               className="text-[#0F6B5C] font-medium hover:underline"
             >
-              {modeInscription ? "Se connecter" : "S'inscrire"}
+              {modeInscription ? t("seConnecter") : t("sInscrire")}
             </button>
           </p>
         </form>
