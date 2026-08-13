@@ -4,8 +4,11 @@ import { getAlertes } from "../api/produits";
 import { logout } from "../api/auth";
 import BoutiqueDetail from "./BoutiqueDetail";
 import Parametres from "./Parametres";
+import { langues, useTraduction } from "../traductions";
 
 function Dashboard({ onLogout }) {
+  const [langue, setLangue] = useState(localStorage.getItem("langue") || "fr");
+  const t = useTraduction(langue);
   const [pageActuelle, setPageActuelle] = useState("boutiques");
   const [boutiqueSelectionnee, setBoutiqueSelectionnee] = useState(null);
   const [boutiques, setBoutiques] = useState([]);
@@ -20,6 +23,11 @@ function Dashboard({ onLogout }) {
     chargerBoutiques();
     chargerAlertes();
   }, []);
+
+  function changerLangue(nouvelleLangue) {
+    setLangue(nouvelleLangue);
+    localStorage.setItem("langue", nouvelleLangue);
+  }
 
   async function chargerBoutiques() {
     try {
@@ -103,24 +111,35 @@ function Dashboard({ onLogout }) {
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
           
-       <a    onClick={() => setPageActuelle("boutiques")}
+           <a  onClick={() => setPageActuelle("boutiques")}
             className="block px-3 py-2 rounded-lg bg-white/10 text-sm font-medium text-white cursor-pointer"
           >
-            Boutiques
+            {t("mesBoutiques")}
           </a>
           
-          <a   onClick={() => setPageActuelle("parametres")}
+              <a  onClick={() => setPageActuelle("parametres")}
             className="block px-3 py-2 rounded-lg text-sm font-medium text-[#C7D6D4] hover:bg-white/10 cursor-pointer transition"
           >
-            Paramètres
+            {t("parametres")}
           </a>
         </nav>
         <div className="px-3 py-4 border-t border-white/10">
+          <select
+            value={langue}
+            onChange={(e) => changerLangue(e.target.value)}
+            className="w-full bg-white/10 text-white text-sm rounded-lg px-3 py-2 mb-2 border border-white/10"
+          >
+            {Object.entries(langues).map(([code, label]) => (
+              <option key={code} value={code} className="text-[#0B2B2A]">
+                {label}
+              </option>
+            ))}
+          </select>
           <button
             onClick={handleLogout}
             className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#C7D6D4] hover:bg-white/10 transition"
           >
-            Déconnexion
+            {t("deconnexion")}
           </button>
         </div>
       </aside>
@@ -129,16 +148,16 @@ function Dashboard({ onLogout }) {
       <main className="flex-1">
         <header className="bg-white border-b border-[#E8E1D5] px-8 py-5 flex items-center justify-between">
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">Mes boutiques</h2>
+            <h2 className="font-display text-xl font-semibold text-[#0B2B2A]">{t("mesBoutiques")}</h2>
             <p className="text-sm text-[#6B7C7A]">
-              {boutiques.length} boutique{boutiques.length > 1 ? "s" : ""}
+              {boutiques.length} {boutiques.length > 1 ? t("boutiques") : t("boutique")}
             </p>
           </div>
           <button
             onClick={() => setAfficherFormulaire(!afficherFormulaire)}
             className="bg-[#0F6B5C] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#0D5A4D] transition"
           >
-            + Nouvelle boutique
+            + {t("nouvelleBoutique")}
           </button>
         </header>
 
@@ -150,7 +169,7 @@ function Dashboard({ onLogout }) {
               </div>
               <div>
                 <p className="font-medium text-[#C1622D] text-sm">
-                  {alertes.length} produit{alertes.length > 1 ? "s" : ""} en stock bas
+                  {alertes.length} {t("produitsEnStockBas")}
                 </p>
                 <p className="text-xs text-[#8A5A3D] mt-0.5">
                   {alertes.slice(0, 3).map((a) => a.nom).join(", ")}
@@ -196,9 +215,9 @@ function Dashboard({ onLogout }) {
           )}
 
           {chargement ? (
-            <p className="text-[#6B7C7A] text-sm">Chargement...</p>
+            <p className="text-[#6B7C7A] text-sm">{t("chargement")}</p>
           ) : boutiques.length === 0 ? (
-            <p className="text-[#6B7C7A] text-sm">Aucune boutique pour l'instant.</p>
+            <p className="text-[#6B7C7A] text-sm">{t("aucuneBoutique")}</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {boutiques.map((b) => (
@@ -211,14 +230,14 @@ function Dashboard({ onLogout }) {
                     onClick={(e) => handleSupprimerBoutique(e, b.id)}
                     className="absolute top-4 right-4 text-[#C1622D] hover:text-white hover:bg-[#C1622D] text-xs font-medium px-2 py-1 rounded-md transition"
                   >
-                    Supprimer
+                    {t("supprimer")}
                   </button>
                   <div className="w-10 h-10 rounded-full bg-[#0F6B5C]/10 text-[#0F6B5C] font-display font-semibold flex items-center justify-center mb-3">
                     {b.nom.charAt(0).toUpperCase()}
                   </div>
                   <h3 className="font-semibold text-[#0B2B2A]">{b.nom}</h3>
                   <p className="text-sm text-[#6B7C7A] mt-1">
-                    {b.adresse || "Aucune adresse"}
+                    {b.adresse || t("aucuneAdresse")}
                   </p>
                 </div>
               ))}
