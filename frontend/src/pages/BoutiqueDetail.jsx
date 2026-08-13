@@ -20,6 +20,16 @@ function BoutiqueDetail({ boutique, onRetour }) {
   const [mouvementQuantite, setMouvementQuantite] = useState("");
   const [mouvementType, setMouvementType] = useState("entree");
 
+  const [toucheNom, setToucheNom] = useState(false);
+  const [touchePrix, setTouchePrix] = useState(false);
+
+  const erreurNom = toucheNom && nom.trim().length === 0 ? "Le nom du produit est requis" : "";
+  const erreurPrix = touchePrix && (prix === "" || parseFloat(prix) <= 0)
+    ? "Le prix doit être un nombre supérieur à 0"
+    : "";
+
+  const formulaireProduitValide = nom.trim().length > 0 && parseFloat(prix) > 0;
+
   useEffect(() => {
     chargerProduits();
   }, []);
@@ -38,6 +48,10 @@ function BoutiqueDetail({ boutique, onRetour }) {
 
   async function handleCreerProduit(e) {
     e.preventDefault();
+    setToucheNom(true);
+    setTouchePrix(true);
+    if (!formulaireProduitValide) return;
+
     try {
       await creerProduit({
         nom,
@@ -50,6 +64,8 @@ function BoutiqueDetail({ boutique, onRetour }) {
       setPrix("");
       setQuantite("");
       setSeuil("5");
+      setToucheNom(false);
+      setTouchePrix(false);
       setAfficherFormulaire(false);
       chargerProduits();
     } catch (err) {
@@ -133,32 +149,43 @@ function BoutiqueDetail({ boutique, onRetour }) {
           <form
             onSubmit={handleCreerProduit}
             className="bg-white border border-[#E8E1D5] rounded-2xl p-6 mb-6 max-w-lg shadow-sm"
+            noValidate
           >
             <h3 className="font-display font-semibold text-[#0B2B2A] mb-4">Ajouter un produit</h3>
-            <input
-              type="text"
-              placeholder="Nom du produit"
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
-              required
-            />
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Nom du produit"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                onBlur={() => setToucheNom(true)}
+                className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 ${
+                  erreurNom ? "border-[#C1622D] focus:ring-[#C1622D]/30" : "border-[#E8E1D5] focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+                }`}
+              />
+              {erreurNom && <p className="text-[#C1622D] text-xs mt-1">{erreurNom}</p>}
+            </div>
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div>
                 <label className="text-xs text-[#6B7C7A] mb-1 block">Prix unitaire</label>
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   value={prix}
                   onChange={(e) => setPrix(e.target.value)}
-                  className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
-                  required
+                  onBlur={() => setTouchePrix(true)}
+                  className={`w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 ${
+                    erreurPrix ? "border-[#C1622D] focus:ring-[#C1622D]/30" : "border-[#E8E1D5] focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
+                  }`}
                 />
+                {erreurPrix && <p className="text-[#C1622D] text-xs mt-1">{erreurPrix}</p>}
               </div>
               <div>
                 <label className="text-xs text-[#6B7C7A] mb-1 block">Stock initial</label>
                 <input
                   type="number"
+                  min="0"
                   value={quantite}
                   onChange={(e) => setQuantite(e.target.value)}
                   className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
@@ -168,6 +195,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
                 <label className="text-xs text-[#6B7C7A] mb-1 block">Seuil alerte</label>
                 <input
                   type="number"
+                  min="0"
                   value={seuil}
                   onChange={(e) => setSeuil(e.target.value)}
                   className="w-full border border-[#E8E1D5] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F6B5C]/30 focus:border-[#0F6B5C]"
@@ -257,6 +285,7 @@ function BoutiqueDetail({ boutique, onRetour }) {
               </select>
               <input
                 type="number"
+                min="1"
                 placeholder="Quantité"
                 value={mouvementQuantite}
                 onChange={(e) => setMouvementQuantite(e.target.value)}
