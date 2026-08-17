@@ -15,3 +15,4 @@ class Boutique(Base):
 
     proprietaire = relationship("User", back_populates="boutiques")
     produits = relationship("Produit", back_populates="boutique", cascade="all, delete-orphan")
+    clients = relationship("Client", cascade="all, delete-orphan", overlaps="boutique")

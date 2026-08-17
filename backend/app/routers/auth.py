@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import hash_mot_de_passe, verifier_mot_de_passe, creer_access_token
 from app.core.auth import get_current_user
+from app.core.email import envoyer_email_bienvenue
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut
 
@@ -25,6 +26,9 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    envoyer_email_bienvenue(user.email, user.nom)
+
     return user
 
 

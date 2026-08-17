@@ -13,5 +13,4 @@ class User(Base):
     mot_de_passe_hash = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # Un user (propriétaire) peut avoir plusieurs boutiques
-    boutiques = relationship("Boutique", back_populates="proprietaire")
+    boutiques = relationship("Boutique", back_populates="proprietaire", cascade="all, delete-orphan")
