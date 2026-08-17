@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 
 class UserCreate(BaseModel):
@@ -12,6 +13,8 @@ class UserOut(BaseModel):
     id: int
     nom: str
     email: EmailStr
+    statut_abonnement: str
+    date_fin_abonnement: Optional[datetime]
     created_at: datetime
 
     class Config:

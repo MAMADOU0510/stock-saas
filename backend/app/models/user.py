@@ -11,6 +11,8 @@ class User(Base):
     nom = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     mot_de_passe_hash = Column(String, nullable=False)
+    statut_abonnement = Column(String, nullable=False, default="essai")  # essai / actif / expire
+    date_fin_abonnement = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     boutiques = relationship("Boutique", back_populates="proprietaire", cascade="all, delete-orphan")
