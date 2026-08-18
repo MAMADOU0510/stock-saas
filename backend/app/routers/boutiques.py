@@ -5,7 +5,7 @@ from typing import List
 from app.core.database import get_db
 from app.models.boutique import Boutique
 from app.schemas.boutique import BoutiqueCreate, BoutiqueOut
-from app.core.auth import get_current_user
+from app.core.auth import get_current_user, verifier_abonnement_actif
 from app.models.user import User
 
 router = APIRouter(prefix="/boutiques", tags=["boutiques"])
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/boutiques", tags=["boutiques"])
 def creer_boutique(
     data: BoutiqueCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verifier_abonnement_actif),
 ):
     boutique = Boutique(
         nom=data.nom,
@@ -31,7 +31,7 @@ def creer_boutique(
 @router.get("/", response_model=List[BoutiqueOut])
 def lister_boutiques(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(verifier_abonnement_actif),
 ):
     return db.query(Boutique).filter(Boutique.proprietaire_id == current_user.id).all()
 
